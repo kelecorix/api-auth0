@@ -14,6 +14,15 @@ import           GHC.Generics
 
 --------------------------------------------------------------------------------
 
+data Config = Config
+  { clientId       :: Text
+  , clientSecret   :: Text
+  , redirectURI    :: Text
+  , grantType      :: Text -- TODO: sum type
+  , basePath       :: Text
+  , apiAccessToken :: Text
+} deriving (Show, Eq)
+
 type AccessCode = Text
 
 data AccessToken = AccessToken
@@ -72,7 +81,7 @@ instance FromJSON Identity where
       parseId _ = mzero
 
 data User = User
-  { userID        :: Text
+  { userId        :: Text
   , email         :: Text
   , emailVerified :: Bool
   , picture       :: Text 
@@ -84,7 +93,7 @@ data User = User
 instance ToJSON User where
   toJSON User{..} =
     AE.object
-    [ "user_id"        .= userID
+    [ "user_id"        .= userId
     , "email"          .= email
     , "email_verified" .= emailVerified
     , "picture"        .= picture
@@ -104,3 +113,4 @@ instance FromJSON User where
       <*> v .: "nickname"
       <*> v .: "identities"
   parseJSON _ = mzero
+
