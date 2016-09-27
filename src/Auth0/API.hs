@@ -6,5 +6,5 @@ module Auth0.API
 import Auth0.API.Auth
 import Auth0.API.Management 
 import Auth0.API.Config
-
+import Auth0.API.Types
 

@@ -1,11 +1,12 @@
-module Auth0.Types
+module Auth0.API.Types
   ( AccessToken(..)
   , Identity(..)
   , User(..)
   ) where
 
+import           Control.Monad
 import qualified Data.Aeson as AE
-import           Data.Aeson (ToJSON, FromJSON, (.=), (.:))
+import           Data.Aeson (ToJSON, FromJSON, (.=), (.:), (.:?))
 import           Data.Monoid ((<>))
 import           Data.Text (Text, pack, unpack)
 import           Data.Text.Encoding (encodeUtf8)
