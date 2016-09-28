@@ -18,9 +18,12 @@ library
   exposed-modules:     Auth0.API
   build-depends:       base >= 4.7 && < 5
                    ,   aeson
+                   ,   mtl
                    ,   containers
                    ,   text
                    ,   http-dispatch
+                   ,   wreq
+                   ,   lens
   default-language:    Haskell2010
 
   default-extensions:
