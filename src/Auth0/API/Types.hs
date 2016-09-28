@@ -1,7 +1,14 @@
+{-# LANGUAGE DeriveAnyClass #-}
+
 module Auth0.API.Types
   ( AccessToken(..)
+  , AccessCode(..)
   , Identity(..)
   , User(..)
+  , Config(..)
+  , RespEmail(..)
+  , RespSMS(..)
+  , EmailType(..)  
   ) where
 
 import           Control.Monad
@@ -80,20 +87,20 @@ instance FromJSON Identity where
       parseId (AE.Number numId) = return . pack . show $ numId
       parseId _ = mzero
 
-data User = User
-  { userId        :: Text
-  , email         :: Text
-  , emailVerified :: Bool
-  , picture       :: Text 
-  , name          :: Text
-  , nickname      :: Text
-  , identities    :: [Identity]
-  } deriving (Show, Eq)
+data User =
+  User { uid        :: Text
+       , email         :: Text
+       , emailVerified :: Bool
+       , picture       :: Text 
+       , name          :: Text
+       , nickname      :: Text
+       , identities    :: [Identity]
+       } deriving (Show, Eq)
 
 instance ToJSON User where
   toJSON User{..} =
     AE.object
-    [ "user_id"        .= userId
+    [ "user_id"        .= uid
     , "email"          .= email
     , "email_verified" .= emailVerified
     , "picture"        .= picture
@@ -114,3 +121,26 @@ instance FromJSON User where
       <*> v .: "identities"
   parseJSON _ = mzero
 
+-- {
+--  "_id": "57eba696469d42056d4abdee",
+--  "email": "sergey.bushnyak@sigrlami.eu"
+--}
+data RespEmail =
+  RespEmail { re_id :: Text
+            , re_email :: Text
+            } deriving (Show, Eq, Generic, FromJSON)
+
+--  {
+--   "_id": "57eba5b1469d42056d4abdea",
+--  "phone_number": "+380937451652",
+--  "request_language": "en-US,en;q=0.5"
+-- }    
+data RespSMS = 
+  RespSMS { rs_id            :: Text
+          , rs_phone_number     :: Text
+          , rs_request_language :: Text
+          } deriving (Show, Eq, Generic, FromJSON)
+
+data EmailType = Link
+               | Code
+               deriving (Show)
