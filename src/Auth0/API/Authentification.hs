@@ -1,8 +1,15 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 module Auth0.API.Authentification
-       ( handshake
+       ( login
+       , logout  
        , passwordlessEmail
        , passwordlessSMS
-       , passwordlessTouch  
+       , passwordlessTouch
+       , userInfo
+       , tokenInfo
+       , linkAccounts
+       , unlinkAccounts  
        ) where
 
 import           Data.Char
@@ -19,21 +26,26 @@ import           Network.Wreq
 
 --------------------------------------------------------------------------------
 
-handshake :: AccessCode -> Config -> ExceptT Text IO AccessToken
-handshake code Config{..} = do
-  resp <- liftIO $ post (unpack $ basePath <> "/oauth/token") requestParams
+-- | Login with username\/password combination
+--   in case of SMS login it's phone-number\/access_token  
+login :: Text -> Text -> Config -> ExceptT Text AccessToken
+login user pass Config{..}= do
+  resp <- liftIO $ post (unpack $ basePath <> "/oauth/ro") requestParams
   case AE.eitherDecode (resp ^. responseBody) of
     (Left err)  -> throwError $ pack $ show err
     (Right tok) -> return tok
   where
     requestParams =
       [ "client_id"     := clientId
-      , "client_secret" := clientSecret
-      , "redirect_uri"  := redirectURI
-      , "grant_type"    := grantType
-      , "code"          := code
+      , "connection"    := "sms"
+      , "grant_type"    := "password"
+      , "username"      := user
+      , "password"      := pass
+      , "scope"         := "openid" -- or "openid name emaol"  
       ]
 
+logout :: AccessToken -> ExceptT Text IO ()
+logout token = undefined
 
 --------------------------------------------------------------------------------
 -- Passwordless    
@@ -73,3 +85,42 @@ passwordlessSMS number Config{..} = do
       
 passwordlessTouch :: Config -> ExceptT Text IO Text
 passwordlessTouch Config{..} = undefined
+
+
+--------------------------------------------------------------------------------
+
+-- | Returns the user information based on the Auth0 access token (obtained during login).
+--
+userInfo :: AccessToken -> ExceptT Text IO UserInfo
+userInfo token = do
+ -- supplu Autho access_token
+  resp <- liftIO $ getWith opts (unpack $ basePath <> "/userinfo") 
+  case AE.eitherDecode (resp ^. responseBody) of
+    (Left err)  -> throwError $ pack $ show err
+    (Right tok) -> return tok
+  where 
+    opts = defaults & header "Authorization" .~ ("Bearer " ++ (access_token token))
+      
+-- | Validates a JSON Web Token (signature and expiration)
+-- and returns the user information associated with the user id (sub property) of the token.
+tokenInfo :: AccessToken -> ExceptT Text IO UsernInfo
+tokenInfo token = do
+ --supplu id_token
+  resp <- liftIO $ post (unpack $ basePath <> "/tokeninfo") requestParams
+  case AE.eitherDecode (resp ^. responseBody) of
+    (Left err)  -> throwError $ pack $ show err
+    (Right tok) -> return tok
+  where 
+    requestParams =
+      [ "id_token" := (id_token token)  
+      ]
+
+-- | 
+-- 
+linkAccounts :: IO ()
+linkAccounts = undefined
+
+-- |
+-- 
+unlinkAccounts :: IO ()
+unlinkAccounts = undefined
