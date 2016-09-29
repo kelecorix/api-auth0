@@ -8,7 +8,9 @@ module Auth0.API.Types
   , Config(..)
   , RespEmail(..)
   , RespSMS(..)
-  , EmailType(..)  
+  , EmailType(..)
+  , TokenInfo(..)
+  , Connection(..)  
   ) where
 
 import           Control.Monad
@@ -126,7 +128,7 @@ instance FromJSON User where
 --  "email": "sergey.bushnyak@sigrlami.eu"
 --}
 data RespEmail =
-  RespEmail { re_id :: Text
+  RespEmail { re_id    :: Text
             , re_email :: Text
             } deriving (Show, Eq, Generic, FromJSON)
 
@@ -136,7 +138,7 @@ data RespEmail =
 --  "request_language": "en-US,en;q=0.5"
 -- }    
 data RespSMS = 
-  RespSMS { rs_id            :: Text
+  RespSMS { rs_id               :: Text
           , rs_phone_number     :: Text
           , rs_request_language :: Text
           } deriving (Show, Eq, Generic, FromJSON)
@@ -144,3 +146,25 @@ data RespSMS =
 data EmailType = Link
                | Code
                deriving (Show)
+
+data UserInfo =
+  UserInfo { ti_phone_number     :: Text
+            , ti_phone_verified   :: Bool
+            , ti_nam              :: Text
+            , ti_client_id        :: Text
+            , ti_updated_at       :: Date
+            , ti_picture          :: Text
+            , ti_user_id          :: Text
+            , ti_nickname         :: Text 
+            , ti_identities       :: [Identify]
+            , ti_created_at       :: Date
+            , ti_global_client_id :: Text
+            } deriving (Show, Eq, Generic, FromJSON)
+
+data Connection = UserPass
+                | Email
+                | Facebook
+                | Twitter
+                | Google
+                | Github
+                | Sms  
