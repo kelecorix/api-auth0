@@ -23,7 +23,6 @@ library
                    ,   containers
                    ,   text
                    ,   time		   
-                   ,   http-dispatch
                    ,   wreq
                    ,   lens
   default-language:    Haskell2010

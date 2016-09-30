@@ -1,7 +1,6 @@
-resolver: lts-7.1
+resolver: lts-7.2
 packages:
 - '.'
 extra-deps:
-  - http-dispatch-0.5.0.2
 flags: {}
 extra-package-dbs: []
