@@ -1,5 +1,5 @@
 name:                api-auth0
-version:             0.1.1.0
+version:             0.1.1.1
 synopsis:            Simple API client for Auth0
 description:         Please see README.md
 homepage:            https://github.com/kelecorix/api-auth0#readme
@@ -19,8 +19,10 @@ library
   build-depends:       base >= 4.7 && < 5
                    ,   aeson
                    ,   mtl
+                   ,   bytestring		   
                    ,   containers
                    ,   text
+                   ,   time		   
                    ,   http-dispatch
                    ,   wreq
                    ,   lens
