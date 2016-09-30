@@ -9,7 +9,7 @@ module Auth0.API.Types
   , RespEmail(..)
   , RespSMS(..)
   , EmailType(..)
-  , TokenInfo(..)
+  , UserInfo(..)
   , Connection(..)  
   ) where
 
@@ -19,6 +19,7 @@ import           Data.Aeson (ToJSON, FromJSON, (.=), (.:), (.:?))
 import           Data.Monoid ((<>))
 import           Data.Text (Text, pack, unpack)
 import           Data.Text.Encoding (encodeUtf8)
+import           Data.Time
 import           GHC.Generics
 
 --------------------------------------------------------------------------------
@@ -148,16 +149,16 @@ data EmailType = Link
                deriving (Show)
 
 data UserInfo =
-  UserInfo { ti_phone_number     :: Text
+  UserInfo { ti_phone_number      :: Text
             , ti_phone_verified   :: Bool
             , ti_nam              :: Text
             , ti_client_id        :: Text
-            , ti_updated_at       :: Date
+            , ti_updated_at       :: UTCTime
             , ti_picture          :: Text
             , ti_user_id          :: Text
             , ti_nickname         :: Text 
-            , ti_identities       :: [Identify]
-            , ti_created_at       :: Date
+            , ti_identities       :: [Identity]
+            , ti_created_at       :: UTCTime
             , ti_global_client_id :: Text
             } deriving (Show, Eq, Generic, FromJSON)
 
